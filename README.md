@@ -147,5 +147,4 @@ Detailed readiness and configuration status.
 - `AI_SERVICE_MAX_IMAGE_BYTES` default: `8388608`
 - `AI_SERVICE_URL_TIMEOUT_SECONDS` default: `20`
 - `AI_SERVICE_PRELOAD_MODEL` default: `1`
-# product-recognition-ai
-AI-powered Python project for product identification and recognition using computer vision and machine learning. Detects and classifies products from images efficiently and accurately.
+ 
