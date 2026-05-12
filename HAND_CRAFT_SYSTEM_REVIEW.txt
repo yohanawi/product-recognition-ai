@@ -1,0 +1,142 @@
+HAND CRAFT E-COMMERCE SYSTEM REVIEW
+Checked on: 2026-03-16
+
+OVERVIEW
+- This system is split into three parts:
+  - backend: Node.js + Express + MongoDB API
+  - frontend: Expo + React Native app
+  - ai-service: Flask + TensorFlow image feature extraction service
+- The core commerce flow already exists: auth, products, cart, wishlist, checkout, orders, admin, blogs, reviews, and AI image search support.
+- Current diagnostics do not show editor errors in the frontend or backend folders.
+
+WHAT HAS ALREADY BEEN CREATED
+
+Frontend
+- Authentication screens and auth context
+- Product catalog and product detail pages
+- Cart and wishlist flows
+- Checkout flow
+- Orders and order tracking screens
+- Admin screens for products, blogs, categories, orders, and users
+- Blog listing and blog detail pages
+- Deals page
+- Best-sellers page
+- AI image search screen
+- Profile and address management
+- Password reset screen
+
+Backend
+- Auth API with JWT
+- Product CRUD APIs
+- Category and subcategory APIs
+- Cart APIs
+- Wishlist APIs
+- Order APIs
+- Admin APIs
+- Blog CRUD APIs
+- Blog comments APIs
+- Product review APIs
+- Coupon support
+- AI search controller for similarity search integration
+
+AI Service
+- MobileNetV2-based feature extraction service
+- Upload image feature extraction endpoint
+- URL-based feature extraction endpoint
+- Health endpoints
+
+RECENT CHANGES FOUND IN THE SYSTEM
+
+1. Auth token persistence
+- Frontend auth now restores the logged-in session from AsyncStorage.
+- Auth state now includes loading protection so admin redirect does not fire too early.
+
+2. Password reset email
+- Backend now uses nodemailer with SMTP support.
+- Reset token generation and reset email sending are implemented.
+- There is a fallback behavior if SMTP is not configured.
+
+3. Product reviews UI
+- Product single page now has a reviews tab.
+- Users can load reviews, submit reviews, and delete their own reviews.
+- Star rating picker and rating summary are already added.
+
+4. Blogs connected to API
+- Blogs listing page now loads blogs from backend.
+- Search, pagination, category filtering, featured blog, and blog detail by slug are connected.
+- Blog comments are connected on the single blog page.
+
+5. Deals page connected to API
+- Deals page now loads product data from the products API.
+- It uses sale price logic and real category filtering.
+
+6. Best-sellers page connected to API
+- Best-sellers page now loads ranked products from the products API.
+- It shows top products and category-filtered product lists.
+
+FRONTEND THINGS TO DO
+
+High priority
+- Connect the contact form to a real backend endpoint.
+- Connect newsletter subscribe buttons to a real backend endpoint.
+- Replace hardcoded localhost API base URL with environment-based config.
+- Improve AI search screen error handling when the AI service is unavailable.
+- Add consistent loading, empty, and failure states across screens.
+
+Medium priority
+- Centralize API base/image base logic instead of repeating API_BASE inside multiple screens.
+- Improve responsive layout consistency across mobile/tablet/desktop widths.
+- Add pagination or lazy loading for blog comments if comment counts grow.
+- Improve cart sync failure visibility to users.
+- Add better placeholders/fallbacks for missing product and blog images.
+
+Low priority
+- Improve frontend README with real setup instructions.
+- Clean up duplicated styling/config patterns.
+- Standardize screen-level alert and toast behavior.
+
+BACKEND THINGS TO DO
+
+High priority
+- Add a contact endpoint for the frontend contact form.
+- Add a newsletter subscription endpoint for the frontend newsletter UI.
+- Move hardcoded service URLs and secrets fully into environment variables.
+- Add stronger request validation for create/update endpoints.
+- Add better handling when the AI service is down.
+
+Medium priority
+- Add automatic AI indexing trigger when products are created or updated.
+- Add stock decrement/update logic when orders are placed.
+- Add order-related notification emails beyond password reset.
+- Add cleanup logic for uploaded images when products/blogs are deleted.
+- Add rate limiting and stricter security middleware configuration.
+
+Low priority
+- Consider soft-delete patterns for products/blogs instead of hard delete only.
+- Add refund flow or richer cancellation/refund handling.
+- Improve admin security controls if this is intended for production.
+
+DOCS AND CONFIG ISSUES
+- Frontend README is still the default Expo starter README and does not describe this project.
+- Frontend API URL is hardcoded to localhost instead of using env configuration.
+- Backend/AI-service integration uses localhost assumptions.
+- SMTP configuration needs proper env values to send real password reset emails.
+- AI service README does not fully describe all implemented endpoints.
+- The project would benefit from .env.example files for backend, frontend, and ai-service.
+
+MAIN RISKS STILL IN THE SYSTEM
+- Contact and newsletter flows look unfinished at system level.
+- Production config is not centralized enough yet.
+- AI-related flows depend on a second service and need better failure messaging.
+- Operational setup is incomplete: tests, containerization, env samples, and deployment guidance are limited.
+
+SUMMARY OF WHAT IS DONE VS WHAT IS LEFT
+- Done: auth persistence, password reset email wiring, product review UI, blogs API connection, deals API connection, best-sellers API connection.
+- Still left: contact integration, newsletter integration, env/config cleanup, stronger backend validation/security, AI-service resilience improvements, documentation cleanup.
+
+RECOMMENDED NEXT STEPS
+1. Finish contact and newsletter backend + frontend integration.
+2. Replace hardcoded frontend/backend service URLs with environment variables.
+3. Add backend validation, rate limiting, and stock update logic.
+4. Improve README files and add .env.example files.
+5. Add test coverage for auth, orders, reviews, blogs, and AI search integration.

@@ -1,0 +1,102 @@
+PROJECT 3 REVIEW
+AI Service Folder: ai-service
+Checked on: 2026-03-16
+
+1. Files currently in this project
+- app.py
+- README.md
+- requirements.txt
+
+2. What this project does
+- This is a Flask-based AI microservice for image feature extraction.
+- It uses TensorFlow + MobileNetV2 with ImageNet pretrained weights.
+- The model is loaded once at startup.
+- It converts an input image into a 1280-dimensional feature vector.
+- This is intended for product similarity search in the e-commerce platform.
+
+3. Main implementation details found in app.py
+- Flask app with CORS enabled for cross-origin requests.
+- Logging is configured at INFO level.
+- MobileNetV2 is loaded with:
+  - weights = imagenet
+  - include_top = False
+  - pooling = avg
+- Image preprocessing flow:
+  - resize to 224x224
+  - convert to NumPy array
+  - MobileNetV2 preprocessing
+  - batch dimension added
+  - model prediction
+  - flattened into a Python list
+
+4. API endpoints that exist
+- GET /
+  - Basic health/status response.
+
+- POST /extract
+  - Accepts multipart/form-data.
+  - Expects file field name: image.
+  - Opens image with Pillow.
+  - Converts image to RGB.
+  - Returns JSON with:
+    - success
+    - features
+    - feature_size
+
+- POST /extract-url
+  - This is an extra feature that exists in code.
+  - Accepts JSON body with:
+    - url
+  - Downloads the image using requests.
+  - Extracts features from the remote image.
+  - Returns JSON with:
+    - success
+    - features
+    - feature_size
+
+- GET /health
+  - This is another extra endpoint that exists in code.
+  - Returns detailed service health information, endpoint list, model name, and feature vector size.
+
+5. Dependencies found in requirements.txt
+- tensorflow==2.15.0
+- pillow==10.2.0
+- numpy==1.26.3
+- flask==3.0.0
+- flask-cors==4.0.0
+- requests==2.31.0
+
+6. What has been created here beyond the basic README description
+- URL-based image feature extraction via POST /extract-url.
+- Detailed monitoring endpoint via GET /health.
+- Request download support using the requests package.
+- Startup logging for model loading and request processing.
+- CORS support for integration with frontend/backend services.
+
+7. Mismatch between README and actual code
+- README documents GET / and POST /extract.
+- README does not mention POST /extract-url.
+- README does not mention GET /health.
+- README mentions the service generally, but the code is slightly more capable than the documentation shows.
+
+8. What is not present in this project
+- No tests.
+- No Dockerfile.
+- No .env or environment-based configuration.
+- No authentication or access control.
+- No request size validation or rate limiting.
+- No persistent storage in this service itself.
+- No batching endpoint for multiple images.
+- No production WSGI setup file such as gunicorn config.
+
+9. Run details
+- Start command: python app.py
+- Host: 0.0.0.0
+- Port: 5001
+- Debug: False
+
+10. Overall assessment
+- Project 3 is already functional as a standalone AI feature extraction service.
+- It is small but complete for a first integration stage.
+- The main extra work already created in this project is the remote URL extraction endpoint and the dedicated health endpoint.
+- The main weakness is missing operational setup: tests, environment config, input limits, and production deployment support.
