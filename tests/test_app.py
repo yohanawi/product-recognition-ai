@@ -22,6 +22,11 @@ class DummyModel:
         return np.ones((1, 1280), dtype=np.float32)
 
 
+class DummyClassifierModel:
+    def predict(self, batch, verbose=0):
+        return np.array([[0.02, 0.08, 0.15, 0.75]], dtype=np.float32)
+
+
 class ZeroVectorModel:
     def predict(self, batch, verbose=0):
         return np.zeros((1, 1280), dtype=np.float32)
@@ -38,10 +43,14 @@ def build_image_bytes(mode="RGB", size=(360, 240), color=(180, 120, 90)):
 class AIServiceAppTests(unittest.TestCase):
     def setUp(self):
         app_module.set_feature_model(DummyModel())
+        app_module._classifier_model = DummyClassifierModel()
+        app_module._class_names = ["Bracelets", "Earrings", "Necklaces", "Rings"]
         self.client = app_module.app.test_client()
 
     def tearDown(self):
         app_module.set_feature_model(None)
+        app_module._classifier_model = None
+        app_module._class_names = None
 
     def test_extract_returns_normalized_feature_vector(self):
         response = self.client.post(
@@ -164,6 +173,24 @@ class AIServiceAppTests(unittest.TestCase):
 
         self.assertEqual(response.status_code, 500)
         self.assertIn("zero-length vector", response.get_json()["error"])
+
+    def test_predict_returns_prediction_and_feature_vector(self):
+        response = self.client.post(
+            "/predict",
+            data={"image": (build_image_bytes(), "sample.png")},
+            content_type="multipart/form-data",
+        )
+
+        self.assertEqual(response.status_code, 200)
+        payload = response.get_json()
+
+        self.assertTrue(payload["success"])
+        self.assertEqual(payload["prediction"]["category"], "ring")
+        self.assertAlmostEqual(payload["prediction"]["confidence"], 0.75, places=6)
+        self.assertEqual(payload["prediction"]["top_categories"][0]["name"], "ring")
+        self.assertEqual(payload["features"]["feature_size"], 1280)
+        self.assertTrue(payload["features"]["normalized"])
+        self.assertEqual(len(payload["features"]["vector"]), 1280)
 
     def test_health_reports_model_and_feature_size(self):
         response = self.client.get("/health")
